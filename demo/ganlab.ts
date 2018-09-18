@@ -85,6 +85,7 @@ class GANLab extends GANLabPolymer {
     const numGeneratorLayersElement =
       document.getElementById('num-g-layers') as HTMLElement;
     this.numGeneratorLayers = +numGeneratorLayersElement.innerText;
+
     document.getElementById('g-layers-add-button')!.addEventListener(
       'click', () => {
         if (this.numGeneratorLayers < 5) {
@@ -95,6 +96,7 @@ class GANLab extends GANLabPolymer {
           this.createExperiment();
         }
       });
+
     document.getElementById('g-layers-remove-button')!.addEventListener(
       'click', () => {
         if (this.numGeneratorLayers > 0) {
@@ -214,7 +216,7 @@ class GANLab extends GANLabPolymer {
         }
       });
 
-    this.lossTypeOptions = ['Log loss', 'LeastSq loss'];
+    this.lossTypeOptions = ['Log loss', 'LeastSq loss', 'Wasserstein Loss'];
     this.lossType = 'Log loss';
     this.querySelector('#loss-type-dropdown')!.addEventListener(
       // tslint:disable-next-line:no-any event has no type
@@ -907,6 +909,7 @@ class GANLab extends GANLabPolymer {
           this.noiseProviderFixed.getNextCopy() as tf.Tensor2D;
         const trueSampleBatch =
           this.trueSampleProviderFixed.getNextCopy() as tf.Tensor2D;
+        console.log('Prediction Time')
         const truePred = this.model.discriminator(trueSampleBatch);
         const generatedPred =
           this.model.discriminator(this.model.generator(noiseBatch));
@@ -969,10 +972,16 @@ class GANLab extends GANLabPolymer {
           const noiseBatch = this.noiseProvider.getNextCopy() as tf.Tensor2D;
           const trueSampleBatch =
             this.trueSampleProvider.getNextCopy() as tf.Tensor2D;
+          const generatorBatch = this.model.generator(noiseBatch);
           const truePred = this.model.discriminator(trueSampleBatch);
-          const generatedPred =
-            this.model.discriminator(this.model.generator(noiseBatch));
+          const generatedPred = this.model.discriminator(generatorBatch);
+          console.log('DTraining time');
+          console.log(this.model.lossType);
+          if (this.lossType === 'Wasserstein loss') { 
+            return this.model.dWassersteinLoss(truePred, generatedPred, trueSampleBatch, generatorBatch)
+          } else {
           return this.model.dLoss(truePred, generatedPred);
+        }
         }, true, this.model.dVariables);
         if ((!keepIterating || this.iterationCount === 1 || this.slowMode ||
           this.iterationCount % VIS_INTERVAL === 0)
@@ -1016,6 +1025,7 @@ class GANLab extends GANLabPolymer {
         for (let i = 0; i < NUM_GRID_CELLS * NUM_GRID_CELLS / BATCH_SIZE; ++i) {
           const inputBatch =
             this.uniformInputProvider.getNextCopy() as tf.Tensor2D;
+          console.log('Vis Time')
           const result = this.model.discriminator(inputBatch);
           const resultData = result.dataSync();
           for (let j = 0; j < resultData.length; ++j) {
@@ -1151,9 +1161,17 @@ class GANLab extends GANLabPolymer {
       for (let j = 0; j < kGSteps; j++) {
         const gCost = this.model.gOptimizer.minimize(() => {
           const noiseBatch = this.noiseProvider.getNextCopy() as tf.Tensor2D;
+          console.log('GTraining Time')
+          console.log(this.model.lossType)
+          if (this.lossType === 'Wasserstein loss') { 
+          const pred =
+            this.model.discriminatorLogits(this.model.generator(noiseBatch));
+          return this.model.gWassersteinLoss(pred);
+          } else {
           const pred =
             this.model.discriminator(this.model.generator(noiseBatch));
           return this.model.gLoss(pred);
+        }
         }, true, this.model.gVariables);
         if ((!keepIterating || this.iterationCount === 1 || this.slowMode ||
           this.iterationCount % VIS_INTERVAL === 0)
