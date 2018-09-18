@@ -43,6 +43,22 @@
       padding-left: 20px;
     }
 
+    .advanced-option-container {
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-width: 0 1px 0 0;
+      min-height: 100px;
+      min-width: 100px;
+    }
+
+    #advanced-panel {
+      background-color: #eee;
+      border-bottom: 2px solid #ddd;
+    }
+
+    #advanced-panel-container {
+      justify-content: normal;
+    }
+
     #distribution-selection .top-column-title {
       color: #222;
       font-size: 13px;
@@ -178,7 +194,7 @@
 
     #main-panel {
       background-color: #f7f7f7;
-      border-bottom: 2px solid #eee;
+      border-bottom: 2px solid #ddd;
     }
 
     .panel-item {      
@@ -1017,44 +1033,6 @@
                   </div>
                 </div>
 
-              <div id="component-options-generator" 
-                class="model-component-options"
-                style="top: 307px; left: 95px">
-                <div class="config-item" style="width: 175px">
-                  <div class="up-down-buttons">
-                    <button class="mdl-button mdl-js-button mdl-button--icon"
-                      id="g-layers-add-button" title="Add a layer">
-                      <i class="material-icons">keyboard_arrow_up</i>
-                    </button>
-                    <br />
-                    <button class="mdl-button mdl-js-button mdl-button--icon"
-                      id="g-layers-remove-button" title="Remove a layer">
-                      <i class="material-icons">keyboard_arrow_down</i>
-                    </button>
-                  </div>
-                  <div class="up-down-buttons">
-                    <label>
-                      <span id="num-g-layers">1</span> hidden layer(s)</label>
-                  </div>
-                  <div class="up-down-buttons">
-                    <button class="mdl-button mdl-js-button mdl-button--icon"
-                      id="g-neurons-add-button" 
-                      title="Add a neuron for each layer">
-                      <i class="material-icons">keyboard_arrow_up</i>
-                    </button>
-                    <br />
-                    <button class="mdl-button mdl-js-button mdl-button--icon"
-                      id="g-neurons-remove-button" 
-                      title="Remove a neuron for each layer">
-                      <i class="material-icons">keyboard_arrow_down</i>
-                    </button>
-                  </div>
-                  <div class="up-down-buttons">
-                    <label><span id="num-g-neurons">8</span> neuron(s)</label>
-                  </div>
-                </div>
-              </div>
-
               <div id="component-discriminator-gradients" 
                 class="model-component"
                 style="top: 7px; left: 430px">
@@ -1304,6 +1282,60 @@ multiple layers. The layers can be turned on or off using checkboxes.">
             <canvas id="cost-chart" width="180" height="180"></canvas>
             <canvas id="eval-chart" width="180" height="180"></canvas>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="advanced-panel">
+      <div id="advanced-panel-container" class="panel-container">
+        <div id="advanced-panel-title" class="panel-item advanced-option-container">
+          <div class="panel-title">Advanced Options</div>
+
+        </div>
+        <div id="advanced-panel-generator" class="panel-item advanced-option-container">
+          <div class="panel-title">Generator</div>
+
+              <div id="component-options-generator" 
+                class="model-component-options">
+                <div class="config-item" style="width: 175px">
+                  <div class="up-down-buttons">
+                    <button class="mdl-button mdl-js-button mdl-button--icon"
+                      id="g-layers-add-button" title="Add a layer">
+                      <i class="material-icons">keyboard_arrow_up</i>
+                    </button>
+                    <br />
+                    <button class="mdl-button mdl-js-button mdl-button--icon"
+                      id="g-layers-remove-button" title="Remove a layer">
+                      <i class="material-icons">keyboard_arrow_down</i>
+                    </button>
+                  </div>
+                  <div class="up-down-buttons">
+                    <label>
+                      <span id="num-g-layers">1</span> hidden layer(s)</label>
+                  </div>
+                  <div class="up-down-buttons">
+                    <button class="mdl-button mdl-js-button mdl-button--icon"
+                      id="g-neurons-add-button" 
+                      title="Add a neuron for each layer">
+                      <i class="material-icons">keyboard_arrow_up</i>
+                    </button>
+                    <br />
+                    <button class="mdl-button mdl-js-button mdl-button--icon"
+                      id="g-neurons-remove-button" 
+                      title="Remove a neuron for each layer">
+                      <i class="material-icons">keyboard_arrow_down</i>
+                    </button>
+                  </div>
+                  <div class="up-down-buttons">
+                    <label><span id="num-g-neurons">8</span> neuron(s)</label>
+                  </div>
+                </div>
+              </div>
+
+        </div>
+        <div id="advanced-panel-discriminator" class="panel-item advanced-option-container">
+          <div class="panel-title">Discriminator</div>
+
         </div>
       </div>
     </div>    

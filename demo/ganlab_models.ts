@@ -143,7 +143,7 @@ export class GANLabModel {
     return generatedTensor;
   }
 
-  discriminator(inputTensor: tf.Tensor2D): tf.Tensor1D {
+  discriminator(inputTensor: tf.Tensor2D) : tf.Tensor1D{
     const dfc0W = /*this.*/dVariables[0] as tf.Tensor2D;
     const dfc0B = /*this.*/dVariables[1];
 
@@ -171,8 +171,22 @@ export class GANLabModel {
         .sigmoid()
         .reshape([/*this.*/batchSize]);
 
+    console.log(this);
+
+    // if (this.lossType === 'Wasserstein loss') {
+      // return predictionTensor
+        // .reshape([/*this.*/batchSize]);
+    // } else {
+      // return predictionTensor
+        // .sigmoid()
+        // .reshape([/*this.*/batchSize]);
+    // }
+    // console.log(this)
+    
     return predictionTensor;
   }
+
+  // discriminatorOutputTensor(inputTensor: tf.T)
 
   // Define losses.
   dLoss(truePred: tf.Tensor1D, generatedPred: tf.Tensor1D) {
@@ -181,10 +195,15 @@ export class GANLabModel {
         truePred.sub(tf.scalar(1)).square().mean(),
         generatedPred.square().mean()
       ) as tf.Scalar;
+    } else if (this.lossType === 'Wasserstein loss') {
+      return tf.add(
+        truePred.sub(tf.scalar(1)).square().mean(),
+        generatedPred.square().mean()
+      ) as tf.Scalar;
     } else {
       return tf.add(
-        truePred.log().mul(tf.scalar(0.95)).mean(),
-        tf.sub(tf.scalar(1), generatedPred).log().mean()
+        truePred.sigmoid().log().mul(tf.scalar(0.95)).mean(),
+        tf.sub(tf.scalar(1), generatedPred.sigmoid()).log().mean()
       ).mul(tf.scalar(-1)) as tf.Scalar;
     }
   }
@@ -193,7 +212,7 @@ export class GANLabModel {
     if (this.lossType === 'LeastSq loss') {
       return generatedPred.sub(tf.scalar(1)).square().mean() as tf.Scalar;
     } else {
-      return generatedPred.log().mean().mul(tf.scalar(-1)) as tf.Scalar;
+      return generatedPred.sigmoid().log().mean().mul(tf.scalar(-1)) as tf.Scalar;
     }
   }
 

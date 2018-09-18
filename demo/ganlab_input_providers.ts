@@ -167,6 +167,26 @@ export class GANLabTrueSampleProviderBuilder extends
           ];
         }
       }
+      // Test additional test case.
+      case 'gaussian_grid': {
+        const stdev = 0.025;
+        if (rand < 0.333) {
+          return [
+            0.35 + stdev * this.randNormal(),
+            0.75 + stdev * this.randNormal()
+          ];
+        } else if (rand < 0.666) {
+          return [
+            0.75 + stdev * this.randNormal(),
+            0.6 + stdev * this.randNormal()
+          ];
+        } else {
+          return [
+            0.45 + stdev * this.randNormal(),
+            0.35 + stdev * this.randNormal()
+          ];
+        }
+      }
       default: {
         throw new Error('Invalid true distribution');
       }
